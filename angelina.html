@@ -1,0 +1,1037 @@
+import tkinter as tk
+import random
+import math
+import time
+
+# ============================================================
+#                 💗 CARTA PARA ANGELINA 💗
+#              SOLO PYTHON - SIN PYGAME
+# ============================================================
+
+# -------------------- VENTANA -------------------------------
+
+root = tk.Tk()
+root.title("Para Angelina 💗")
+root.configure(bg="#ffe5f0")
+
+# Pantalla completa
+root.attributes("-fullscreen", True)
+
+W = root.winfo_screenwidth()
+H = root.winfo_screenheight()
+
+canvas = tk.Canvas(
+    root,
+    width=W,
+    height=H,
+    bg="#ffe5f0",
+    highlightthickness=0
+)
+canvas.pack(fill="both", expand=True)
+
+
+# ============================================================
+#                       UTILIDADES
+# ============================================================
+
+def centro():
+    return W // 2, H // 2
+
+
+def texto_centrado(
+        texto,
+        x,
+        y,
+        fuente,
+        color,
+        tag=None):
+
+    return canvas.create_text(
+        x,
+        y,
+        text=texto,
+        font=fuente,
+        fill=color,
+        anchor="center",
+        tags=tag
+    )
+
+
+# ============================================================
+#                  FONDO DEGRADADO
+# ============================================================
+
+def crear_fondo():
+
+    # Franjas para simular un degradado
+    for y in range(0, H, 4):
+
+        t = y / H
+
+        r = int(255)
+        g = int(225 + 20 * t)
+        b = int(239 + 10 * t)
+
+        color = f"#{r:02x}{g:02x}{b:02x}"
+
+        canvas.create_rectangle(
+            0,
+            y,
+            W,
+            y + 5,
+            fill=color,
+            outline=""
+        )
+
+
+crear_fondo()
+
+
+# ============================================================
+#                    CORAZÓN 💗
+# ============================================================
+
+def dibujar_corazon(
+        x,
+        y,
+        tamaño,
+        color="#ff5c99"):
+
+    # Corazón construido con círculos + triángulo.
+    # No depende de emojis ni fuentes especiales.
+
+    r = tamaño * 0.30
+
+    canvas.create_oval(
+        x - tamaño * 0.50,
+        y - tamaño * 0.35,
+        x,
+        y + tamaño * 0.15,
+        fill=color,
+        outline="",
+    )
+
+    canvas.create_oval(
+        x,
+        y - tamaño * 0.35,
+        x + tamaño * 0.50,
+        y + tamaño * 0.15,
+        fill=color,
+        outline="",
+    )
+
+    canvas.create_polygon(
+        x - tamaño * 0.47,
+        y - tamaño * 0.05,
+
+        x + tamaño * 0.47,
+        y - tamaño * 0.05,
+
+        x,
+        y + tamaño * 0.65,
+
+        fill=color,
+        outline=""
+    )
+
+
+# ============================================================
+#                    CORAZONES ANIMADOS
+# ============================================================
+
+corazones = []
+
+
+class Corazon:
+
+    def __init__(self):
+
+        self.x = random.randint(30, W - 30)
+        self.y = random.randint(-H, -20)
+
+        self.tamaño = random.randint(
+            12,
+            35
+        )
+
+        self.velocidad = random.uniform(
+            1.0,
+            3.5
+        )
+
+        self.movimiento = random.uniform(
+            0.4,
+            1.2
+        )
+
+        self.angulo = random.uniform(
+            0,
+            math.pi * 2
+        )
+
+        self.color = random.choice([
+            "#ff4f91",
+            "#ff669f",
+            "#ff7aaa",
+            "#e83e75",
+            "#ff8fb8"
+        ])
+
+    def actualizar(self):
+
+        self.y += self.velocidad
+
+        self.angulo += 0.025
+
+        self.x += (
+            math.sin(self.angulo)
+            * self.movimiento
+        )
+
+        if self.y > H + 80:
+
+            self.y = random.randint(
+                -300,
+                -30
+            )
+
+            self.x = random.randint(
+                30,
+                W - 30
+            )
+
+    def dibujar(self):
+
+        dibujar_corazon(
+            self.x,
+            self.y,
+            self.tamaño,
+            self.color
+        )
+
+
+for _ in range(70):
+
+    corazones.append(
+        Corazon()
+    )
+
+
+# ============================================================
+#                    ESTRELLITAS
+# ============================================================
+
+estrellas = []
+
+for _ in range(100):
+
+    x = random.randint(0, W)
+    y = random.randint(0, H)
+    r = random.randint(1, 3)
+
+    estrella = canvas.create_oval(
+        x - r,
+        y - r,
+        x + r,
+        y + r,
+        fill="#ffffff",
+        outline=""
+    )
+
+    estrellas.append(
+        (estrella, random.random())
+    )
+
+
+def animar_estrellas():
+
+    for estrella, fase in estrellas:
+
+        brillo = int(
+            180
+            + 70
+            * math.sin(
+                time.time() * 3
+                + fase * 10
+            )
+        )
+
+        brillo = max(
+            100,
+            min(255, brillo)
+        )
+
+        color = (
+            f"#{brillo:02x}"
+            f"{brillo:02x}"
+            f"{brillo:02x}"
+        )
+
+        canvas.itemconfig(
+            estrella,
+            fill=color
+        )
+
+    root.after(
+        30,
+        animar_estrellas
+    )
+
+
+animar_estrellas()
+
+
+# ============================================================
+#                      100 RAZONES
+# ============================================================
+
+razones = [
+
+    "Porque haces mis días más bonitos.",
+    "Porque tu sonrisa siempre consigue alegrarme.",
+    "Porque me encanta tu forma de ser.",
+    "Porque contigo puedo ser yo.",
+    "Porque haces especiales los momentos simples.",
+    "Porque me encanta hablar contigo.",
+    "Porque siempre consigues hacerme sonreír.",
+    "Porque eres una persona increíble.",
+    "Porque me encanta tu personalidad.",
+    "Porque adoro nuestras conversaciones.",
+    "Porque me haces sentir especial.",
+    "Porque disfruto muchísimo tu compañía.",
+    "Porque tienes un lugar especial en mi corazón.",
+    "Porque haces que todo sea más bonito.",
+    "Porque me encanta escucharte.",
+    "Porque valoro muchísimo tu presencia.",
+    "Porque me encanta pasar tiempo contigo.",
+    "Porque eres importante para mí.",
+    "Porque me haces feliz.",
+    "Porque me encanta tu manera de pensar.",
+    "Porque haces que quiera sonreír.",
+    "Porque me encantan tus pequeños detalles.",
+    "Porque contigo nunca me aburro.",
+    "Porque me encanta cómo eres.",
+    "Porque eres única.",
+    "Porque me haces sentir acompañado.",
+    "Porque adoro nuestros momentos.",
+    "Porque siempre consigues sacarme una sonrisa.",
+    "Porque me encanta tu forma de expresarte.",
+    "Porque disfruto cada conversación contigo.",
+    "Porque tienes una energía muy bonita.",
+    "Porque me gusta descubrir cosas de ti.",
+    "Porque haces especial un día normal.",
+    "Porque me encanta escucharte contar cosas.",
+    "Porque eres una persona muy especial.",
+    "Porque me haces sentir querido.",
+    "Porque me encantan nuestras risas.",
+    "Porque contigo el tiempo pasa volando.",
+    "Porque me gusta compartir mis cosas contigo.",
+    "Porque haces que los pequeños momentos importen.",
+    "Porque eres parte de mis recuerdos favoritos.",
+    "Porque me encanta cómo me tratas.",
+    "Porque me haces sonreír sin darte cuenta.",
+    "Porque me gusta tenerte en mi vida.",
+    "Porque contigo puedo crear recuerdos bonitos.",
+    "Porque adoro nuestras ocurrencias.",
+    "Porque me encanta cuando hablamos.",
+    "Porque me gusta conocerte cada día más.",
+    "Porque simplemente me importas muchísimo.",
+    "Porque haces que mis días tengan algo especial.",
+    "Porque me encanta tu manera de reír.",
+    "Porque me gusta cómo ves las cosas.",
+    "Porque haces que quiera guardar nuestros momentos.",
+    "Porque me encanta compartir risas contigo.",
+    "Porque eres alguien que valoro muchísimo.",
+    "Porque haces que todo se sienta diferente.",
+    "Porque me gusta cuando me cuentas tus cosas.",
+    "Porque siempre hay algo nuevo que descubrir de ti.",
+    "Porque me haces sentir afortunado.",
+    "Porque me encantan tus detalles.",
+    "Porque me gusta cómo nos entendemos.",
+    "Porque eres parte de muchos momentos bonitos.",
+    "Porque me encanta tu forma de mirar la vida.",
+    "Porque haces que sonría de la nada.",
+    "Porque me gusta tener recuerdos contigo.",
+    "Porque me encanta cuando nos reímos.",
+    "Porque haces que los momentos duren en mi memoria.",
+    "Porque me gusta compartir mis alegrías contigo.",
+    "Porque me encanta escuchar tus historias.",
+    "Porque haces que me sienta importante.",
+    "Porque tienes una forma especial de alegrarme.",
+    "Porque me encanta tu compañía.",
+    "Porque eres parte de mis días favoritos.",
+    "Porque haces que valore los pequeños detalles.",
+    "Porque me encanta cuando hablamos de cualquier cosa.",
+    "Porque me haces querer sonreír.",
+    "Porque me gusta aprender de ti.",
+    "Porque eres alguien que quiero muchísimo.",
+    "Porque me encanta cómo somos juntos.",
+    "Porque me haces sentir especial de una manera única.",
+    "Porque adoro nuestros momentos inesperados.",
+    "Porque me encanta compartir tiempo contigo.",
+    "Porque me gusta cada recuerdo bonito que tenemos.",
+    "Porque haces que mi mundo se sienta más bonito.",
+    "Porque eres alguien que significa mucho para mí.",
+    "Porque me encanta tu forma de ser.",
+    "Porque me gusta saber que estás en mi vida.",
+    "Porque contigo puedo crear momentos inolvidables.",
+    "Porque me haces sonreír incluso sin intentarlo.",
+    "Porque adoro nuestras pequeñas locuras.",
+    "Porque me gusta todo lo que compartimos.",
+    "Porque haces feliz a mi corazón.",
+    "Porque eres una persona que quiero cuidar.",
+    "Porque me encanta tenerte cerca.",
+    "Porque haces que cada momento tenga algo especial.",
+    "Porque simplemente eres tú.",
+    "Porque eres Angelina.",
+]
+
+# Asegurar exactamente 100
+while len(razones) < 99:
+
+    razones.insert(
+        -1,
+        "Porque hay algo especial en ti que adoro."
+    )
+
+razones = razones[:99]
+
+razones.append(
+    "TODO. PORQUE TE AMO."
+)
+
+
+# ============================================================
+#                       VARIABLES
+# ============================================================
+
+estado = "inicio"
+
+razon_actual = 0
+
+animacion_apertura = 0
+
+ultimo_cambio = time.time()
+
+fade = 0
+
+final_animacion = 0
+
+
+# ============================================================
+#                 TEXTO PRINCIPAL
+# ============================================================
+
+titulo = texto_centrado(
+    "ANGELINA",
+    W // 2,
+    110,
+    ("Arial", 65, "bold"),
+    "#c92f6d"
+)
+
+subtitulo = texto_centrado(
+    "Tengo algo para ti...",
+    W // 2,
+    180,
+    ("Arial", 25),
+    "#87304f"
+)
+
+
+# ============================================================
+#                         SOBRE
+# ============================================================
+
+sobre_items = []
+
+
+def crear_sobre():
+
+    sobre_items.clear()
+
+    cx = W // 2
+    cy = H // 2 + 30
+
+    ancho = min(
+        850,
+        W * 0.55
+    )
+
+    alto = ancho * 0.58
+
+    izquierda = cx - ancho / 2
+    derecha = cx + ancho / 2
+
+    arriba = cy - alto / 2
+    abajo = cy + alto / 2
+
+    # Sombra
+    sombra = canvas.create_rectangle(
+        izquierda + 12,
+        arriba + 18,
+        derecha + 12,
+        abajo + 18,
+        fill="#d99ab3",
+        outline=""
+    )
+
+    sobre_items.append(
+        sombra
+    )
+
+    # Sobre
+    cuerpo = canvas.create_rectangle(
+        izquierda,
+        arriba,
+        derecha,
+        abajo,
+        fill="#ff9fc2",
+        outline="#d94b82",
+        width=5
+    )
+
+    sobre_items.append(
+        cuerpo
+    )
+
+    # Solapa
+    solapa = canvas.create_polygon(
+        izquierda,
+        arriba,
+        derecha,
+        arriba,
+        cx,
+        cy,
+        fill="#ffc1d7",
+        outline="#d94b82",
+        width=5
+    )
+
+    sobre_items.append(
+        solapa
+    )
+
+    # Corazón
+    dibujar_corazon(
+        cx,
+        cy + 55,
+        90,
+        "#e83d78"
+    )
+
+    # Texto
+    texto = texto_centrado(
+        "ABRE MI CARTA",
+        cx,
+        abajo - 60,
+        ("Arial", 24, "bold"),
+        "#8f234e"
+    )
+
+    sobre_items.append(
+        texto
+    )
+
+
+crear_sobre()
+
+
+# ============================================================
+#                  CLICK PARA ABRIR
+# ============================================================
+
+def click():
+
+    global estado
+
+    if estado == "inicio":
+
+        estado = "abriendo"
+
+        canvas.delete(
+            "all"
+        )
+
+        # Recrear fondo
+        crear_fondo()
+
+        # Explosión de corazones
+        explosion_corazones()
+
+
+root.bind(
+    "<Button-1>",
+    lambda event: click()
+)
+
+
+# ============================================================
+#                   EXPLOSIÓN CORAZONES
+# ============================================================
+
+explosiones = []
+
+
+def explosion_corazones():
+
+    cx = W // 2
+    cy = H // 2
+
+    for _ in range(45):
+
+        angulo = random.uniform(
+            0,
+            math.pi * 2
+        )
+
+        velocidad = random.uniform(
+            5,
+            15
+        )
+
+        tamaño = random.randint(
+            15,
+            35
+        )
+
+        explosiones.append([
+            cx,
+            cy,
+            math.cos(angulo) * velocidad,
+            math.sin(angulo) * velocidad,
+            tamaño
+        ])
+
+
+def animar_explosion():
+
+    global explosiones
+
+    if explosiones:
+
+        nuevos = []
+
+        for p in explosiones:
+
+            x, y, vx, vy, tamaño = p
+
+            x += vx
+            y += vy
+
+            vy += 0.18
+
+            tamaño *= 0.985
+
+            dibujar_corazon(
+                x,
+                y,
+                tamaño,
+                "#ff4f91"
+            )
+
+            if tamaño > 5:
+
+                nuevos.append([
+                    x,
+                    y,
+                    vx,
+                    vy,
+                    tamaño
+                ])
+
+        explosiones = nuevos
+
+    root.after(
+        30,
+        animar_explosion
+    )
+
+
+animar_explosion()
+
+
+# ============================================================
+#                     CARTA ABIERTA
+# ============================================================
+
+def dibujar_carta():
+
+    cx = W // 2
+
+    # Panel
+    ancho = min(
+        1000,
+        W * 0.72
+    )
+
+    alto = min(
+        620,
+        H * 0.65
+    )
+
+    izquierda = cx - ancho / 2
+    arriba = H / 2 - alto / 2
+
+    derecha = cx + ancho / 2
+    abajo = arriba + alto
+
+    # Sombra
+    canvas.create_rectangle(
+        izquierda + 15,
+        arriba + 20,
+        derecha + 15,
+        abajo + 20,
+        fill="#d8a0b5",
+        outline="",
+        tags="carta"
+    )
+
+    # Carta
+    canvas.create_rectangle(
+        izquierda,
+        arriba,
+        derecha,
+        abajo,
+        fill="#fffafd",
+        outline="#e95d91",
+        width=5,
+        tags="carta"
+    )
+
+    # Nombre
+    texto_centrado(
+        "ANGELINA",
+        cx,
+        arriba + 85,
+        ("Arial", 58, "bold"),
+        "#c92f6d",
+        "carta"
+    )
+
+    # Contador
+    texto_centrado(
+        f"{razon_actual + 1} / 100",
+        cx,
+        arriba + 155,
+        ("Arial", 20, "bold"),
+        "#e06a98",
+        "carta"
+    )
+
+    # Razón
+    razon = razones[
+        razon_actual
+    ]
+
+    # Dividir texto
+    palabras = razon.split()
+
+    lineas = []
+    linea = ""
+
+    for palabra in palabras:
+
+        prueba = (
+            linea + " " + palabra
+        ).strip()
+
+        if len(prueba) > 42:
+
+            lineas.append(
+                linea
+            )
+
+            linea = palabra
+
+        else:
+
+            linea = prueba
+
+    if linea:
+        lineas.append(linea)
+
+    y = arriba + 270
+
+    for linea in lineas:
+
+        texto_centrado(
+            linea,
+            cx,
+            y,
+            ("Arial", 31, "bold"),
+            "#71364f",
+            "carta"
+        )
+
+        y += 52
+
+    # Corazón
+    dibujar_corazon(
+        cx,
+        abajo - 90,
+        55,
+        "#ff5c99"
+    )
+
+
+# ============================================================
+#                   FINAL GIGANTE
+# ============================================================
+
+def dibujar_final():
+
+    global final_animacion
+
+    final_animacion += 0.025
+
+    cx = W // 2
+
+    # Oscurecer ligeramente el fondo
+    canvas.create_rectangle(
+        0,
+        0,
+        W,
+        H,
+        fill="#ffd5e5",
+        outline="",
+        tags="final"
+    )
+
+    # Corazones grandes alrededor
+    posiciones = [
+        (cx - 350, H // 2 - 230),
+        (cx + 350, H // 2 - 230),
+        (cx - 430, H // 2 + 100),
+        (cx + 430, H // 2 + 100),
+        (cx, H // 2 + 350),
+    ]
+
+    for x, y in posiciones:
+
+        tamaño = (
+            55
+            + 10 *
+            math.sin(
+                final_animacion * 4
+            )
+        )
+
+        dibujar_corazon(
+            x,
+            y,
+            tamaño,
+            "#ff4f91"
+        )
+
+    # Nombre
+    texto_centrado(
+        "ANGELINA",
+        cx,
+        H // 2 - 330,
+        ("Arial", 72, "bold"),
+        "#bd2f68",
+        "final"
+    )
+
+    # 100
+    tamaño_100 = int(
+        120
+        + 25 *
+        math.sin(
+            final_animacion * 3
+        )
+    )
+
+    texto_centrado(
+        "100",
+        cx,
+        H // 2 - 110,
+        ("Arial", tamaño_100, "bold"),
+        "#e83f7d",
+        "final"
+    )
+
+    # TODO
+    texto_centrado(
+        "TODO.",
+        cx,
+        H // 2 + 100,
+        ("Arial", 90, "bold"),
+        "#bd2f68",
+        "final"
+    )
+
+    # PORQUE TE AMO
+    texto_centrado(
+        "PORQUE TE AMO",
+        cx,
+        H // 2 + 230,
+        ("Arial", 55, "bold"),
+        "#e83f7d",
+        "final"
+    )
+
+
+# ============================================================
+#                   ANIMACIÓN PRINCIPAL
+# ============================================================
+
+def actualizar():
+
+    global estado
+    global animacion_apertura
+    global razon_actual
+    global ultimo_cambio
+    global fade
+
+    # ------------------------------------------
+    # Corazones normales
+    # ------------------------------------------
+
+    if estado != "final":
+
+        for corazon in corazones:
+
+            corazon.actualizar()
+
+            # Dibujarlo encima
+            corazon.dibujar()
+
+    # ------------------------------------------
+    # ABRIENDO
+    # ------------------------------------------
+
+    if estado == "abriendo":
+
+        animacion_apertura += 0.06
+
+        if animacion_apertura >= 1:
+
+            estado = "razones"
+
+            razon_actual = 0
+
+            ultimo_cambio = time.time()
+
+            fade = 0
+
+            canvas.delete(
+                "all"
+            )
+
+            crear_fondo()
+
+    # ------------------------------------------
+    # RAZONES
+    # ------------------------------------------
+
+    elif estado == "razones":
+
+        # Limpiar solamente carta
+        canvas.delete(
+            "carta"
+        )
+
+        dibujar_carta()
+
+        fade += 0.05
+
+        # Cambiar cada 2.5 segundos
+        if (
+            time.time()
+            - ultimo_cambio
+            > 2.5
+        ):
+
+            razon_actual += 1
+
+            ultimo_cambio = time.time()
+
+            if razon_actual >= 100:
+
+                estado = "final"
+
+                canvas.delete(
+                    "all"
+                )
+
+                crear_fondo()
+
+    # ------------------------------------------
+    # FINAL
+    # ------------------------------------------
+
+    elif estado == "final":
+
+        canvas.delete(
+            "final"
+        )
+
+        dibujar_final()
+
+    # ------------------------------------------
+    # SOBRE
+    # ------------------------------------------
+
+    elif estado == "inicio":
+
+        pass
+
+    root.after(
+        16,
+        actualizar
+    )
+
+
+# ============================================================
+#               ANIMACIÓN DEL SOBRE
+# ============================================================
+
+def animar_sobre():
+
+    if estado == "abriendo":
+
+        # Hacer desaparecer el sobre progresivamente
+        alpha = max(
+            0,
+            1 - animacion_apertura
+        )
+
+        # Moverlo ligeramente hacia arriba
+        desplazamiento = int(
+            animacion_apertura * 120
+        )
+
+        # El contenido se elimina cuando termina
+        # la animación.
+
+    root.after(
+        16,
+        animar_sobre
+    )
+
+
+# ============================================================
+#                    BOTÓN SALIR
+# ============================================================
+
+def salir(event=None):
+
+    root.destroy()
+
+
+root.bind(
+    "<Escape>",
+    salir
+)
+
+
+# ============================================================
+#                       INICIO
+# ============================================================
+
+actualizar()
+animar_sobre()
+
+root.mainloop()
